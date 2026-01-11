@@ -33,14 +33,15 @@ public class PlayViewController {
     @FXML
     private Button addButton;
 
-    private String currentLevel = "planets"; // Tracks the current table level
-    private int selectedSolarSystem;
+    private String currentLevel = "planets";    // Tracks the current table level
+    private int selectedSolarSystem = 1;        // Id from the selected solar system
 
     @FXML
     public void initialize() {
         controller = new UniGraoVerseController();
         loadSolarSystemsTable();
         setupBackButton();
+
     }
 
     private void loadSolarSystemsTable()
@@ -63,7 +64,7 @@ public class PlayViewController {
         List<String> planets = controller.getPlanetsData(selectedSolarSystem);
 
         setupTable(
-                List.of("ID", "Planets from " + selectedSolarSystem, "Mass", "Radius", "Gravity", "Last albedo measurement date"),
+                List.of("ID", "Planets", "Mass", "Radius", "Gravity", "Last albedo measurement date"),
                 List.of("id", "name", "mass", "radius", "gravity", "date"),
                 planets,
                 null
@@ -179,7 +180,7 @@ public class PlayViewController {
 
         mainTableView.setItems(FXCollections.observableArrayList(rows));
         mainTableView.setVisible(true);
-
+        // Manejar eventos
         if (listener != null) {
             mainTableView.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && mainTableView.getSelectionModel().getSelectedItem() != null) {
@@ -188,6 +189,7 @@ public class PlayViewController {
             });
         }
     }
+
 
     // Parses a Json, with a specificed list of strings to a list of the values
     private List<String> parseJsonToList(String json, List<String> keys) {
@@ -223,6 +225,8 @@ public class PlayViewController {
                     loadSolarSystemsTable();
                 } else if ("solarSystems".equals(currentLevel)) {
                     UniGraoVerse.main.goScene("main");
+                } else {
+                    System.out.println("Invalid level");
                 }
             } catch (IOException ex) {
                 System.exit(1);
@@ -235,6 +239,21 @@ public class PlayViewController {
     private void setupAddButton() {
         addButton.setOnAction(e -> showAddDialog());
     }
+
+    // TODO: complete this method calling properly to the controller
+    @FXML
+    private void setupDeleteButton() {
+        List<String> selectedRow = mainTableView.getSelectionModel().getSelectedItem();
+        if (currentLevel.equals("planets")) {
+            // controller.removePlanet(...);
+        }
+        else if (currentLevel.equals("solarSystems")) {
+            // controller.removeSolarSystem(...);
+        }
+
+        System.out.println("Deleting is still not implemented: " + selectedRow);
+    }
+
 
     private void showAddDialog() {
         Dialog<List<String>> dialog = new Dialog<>();

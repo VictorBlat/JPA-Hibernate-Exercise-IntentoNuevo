@@ -8,18 +8,13 @@ import com.google.gson.Gson;
 import org.ieselgrao.hibernatepractica.model.Planet;
 import org.ieselgrao.hibernatepractica.model.SolarSystem;
 /**
- * Controller class for the EdUOCation application
+ * Controller class for the UniGraoVerse application
  */
 public class UniGraoVerseController {
 
-    // private LinkedList<Planet> planets;
     private LinkedList<SolarSystem> solarSystems;
 
-    // TODO: create a persistence unit and give it here the name
-    private static final String PERSISTENCE_UNIT_NAME = "";
-
     public UniGraoVerseController() {
-
         solarSystems = loadSolarSystems();
         loadPlanets();
     }
@@ -32,8 +27,11 @@ public class UniGraoVerseController {
         solarSystems.add(new SolarSystem("Sistema Solar", "Sol", 0, 40));
         solarSystems.get(0).setId(1); // Also, the id should not be setted like this!! Remove setId method in the future
 
-        solarSystems.add(new SolarSystem("Sistema Inventado", "Aitana", 100, 55));
+        solarSystems.add(new SolarSystem("Lich system", "Lich", 700, 0.46));
         solarSystems.get(1).setId(2);
+
+        solarSystems.add(new SolarSystem("Sistema Inventado", "Aitana", 100, 55));
+        solarSystems.get(2).setId(3);
 
         return solarSystems;
     }
@@ -55,16 +53,24 @@ public class UniGraoVerseController {
         solarPlanets.add(new Planet("Plutón", 5, 1.309e22, 1188.3, 0.62, LocalDate.of(2023, 4, 12), false));
         solarSystems.getFirst().setPlanets(solarPlanets);
 
+        LinkedList<Planet> lichPlanets = new LinkedList<>();
+        lichPlanets.add(new Planet("Draugr", 0, 1.194e23, 1400.0, 0.45, LocalDate.of(2012, 1, 21), false));
+        lichPlanets.add(new Planet("Poltergeist", 1, 2.568e25, 9400.0, 12.8, LocalDate.of(2013, 1, 21), false));
+        lichPlanets.add(new Planet("Phobetor", 2, 2.329e25, 9100.0, 11.2, LocalDate.of(2014, 1, 21), false));
+        lichPlanets.add(new Planet("Lich-e", 3, 2.38e21, 450.0, 0.08, LocalDate.of(2002, 2, 10), false));
+        solarSystems.get(1).setPlanets(lichPlanets);
+
         LinkedList<Planet> inventedPlanets = new LinkedList<>();
         inventedPlanets.add(new Planet("Tatooine", 0, 3.3011e23, 2439.7, 3.7, LocalDate.of(2023, 1, 15), false));
         inventedPlanets.add(new Planet("Arrakis", 0, 4.8675e24, 6051.8, 8.87, LocalDate.of(2023, 2, 20), false));
         inventedPlanets.add(new Planet("Pandora", 1, 5.972e24, 6371.0, 9.80, LocalDate.of(2024, 1, 1), false));
         inventedPlanets.add(new Planet("Solaris", 2, 6.4171e23, 3389.5, 3.71, LocalDate.of(2023, 5, 5), false));
-        solarSystems.get(1).setPlanets(inventedPlanets);
+        solarSystems.get(2).setPlanets(inventedPlanets);
+
 
         // Asign IDs.
         // TODO: remove this loop. IDs should be added in other way
-        // Also, they should not repeat even in different solar sistems
+        // Also, ID should not repeat even in different solar sistems
         for (SolarSystem ss : solarSystems)
         {
             System.out.println("Loaded " + ss.getPlanets().size() + " planets " + " for " + ss.getName());
@@ -105,7 +111,6 @@ public class UniGraoVerseController {
 
     /**
      * TODO: You might need to change this code to call persistence. Also, ensure ID is managed somehow!
-     * Add a planet to the controller. Also, call persistence!
      */
     public void addPlanet(int solarSystemId, String name, double mass, double radius, double gravity, LocalDate lastAlbedoMeasurement) {
         for (SolarSystem ss : solarSystems)
@@ -118,6 +123,14 @@ public class UniGraoVerseController {
             }
         }
         System.err.println("Could not find solar system with id: " + solarSystemId);
+    }
+
+    // TODO: remove Planets from Java, but also from persistence
+    public void removePlanet(int planetId) {
+
+    }
+    public void removeSolarSystem(int solarSystemId){
+
     }
 
     /**

@@ -6,8 +6,8 @@ public class SolarSystem {
     private int id;
     private String name;
     private String starName;
-    private double starDistance;
-    private double Radius;
+    private double starDistance; // Main star distance to the Sun, in parsecs
+    private double Radius;      // Distance to most far away planet, in UA
     private LinkedList<Planet> planets;
 
     public SolarSystem(String name, String starName, double starDistance, double Radius) {

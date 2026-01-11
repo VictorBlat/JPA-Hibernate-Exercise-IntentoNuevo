@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.ieselgrao.hibernatepractica.model.UniverseException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -87,8 +88,11 @@ public class UniGraoVerse extends Application {
             Scene scene = new Scene(FXMLLoader.load(resource), WIDTH, HEIGHT);
             stage.setScene(scene);
             stage.show();
-        }catch(Exception e){
+        }
+        catch(Exception e){
             System.err.println("ERROR loading scene: " + view + ". Message: " + e.getMessage());
+            System.err.println("Stack trace: ");
+            e.printStackTrace();
         }
 
     }

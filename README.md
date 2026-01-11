@@ -6,8 +6,10 @@ El objetivo de esta práctica es transformar una aplicación de escritorio bási
 ## Persistencia en dos bases de datos
 
 El reto principal consiste en lograr que la aplicación sea capaz de persistir datos de forma intercambiable entre dos motores de base de datos (MySQL y SQLite) **sin modificar apenas el código fuente.**
-
 Para ello, he decidido poner dos botones de inicio. Sentíos libre de modificar el mecanismo para intercambiar entre un sistema y otro.
+
+**La aplicación final tiene que cargar datos desde ambos sistemas, y poder actualizar, añadir y eliminar planetas y sistemas solares.**
+
 
 Conviene saber que:
 - MySQL es un **servidor** de base de datos. Funciona con comunicaciones cliente-servidor en el puerto 3306.
@@ -16,9 +18,23 @@ Conviene saber que:
 ## La estructura de la plantilla
 
 La plantilla tiene todo el *frontend* de la aplicación ya realizado. Sigue el estándar Modelo-Vista-Controlador.
+- Modelo: clases `Planet` y `SolarSystem`. Las clases que definen los datos y su estructura
+- `UniGraoVerseController`: aquí se cargan y se centraliza el uso de datos
+- `View`: consiste tanto en los archivos `.fxml` como en las clases `XViewController.java`. En estas, se maneja la lógica del frontend y se llama al controlador cuando se le requiere.
+**Deberías crear tus clases propias para manejar la persistencia**
 
-Deberías crear tus clases propias para manejar la persistencia. Idealmente, basta con modificar 
-
+## Objetivos desglosados
+Por si necesitas ir paso a paso:
+- Añade al archivo `pom.xml` las dependencias necesarias de Hibernate, el driver de MySQL y SQLite
+- Añade las etiquetas necesarias de Hibernate a las clases Planet y SolarSystem. Ten en cuenta que, si quieres que los planetas en SQL tengan una referencia a su SolarSystem correspondiente (recomendado), deberás añadir una referencia de cada Planet a su SolarSystem, junto a la lógica necesaria para esto.
+- Crea el archivo `persistence.xml` en el directorio `resources/META-INF`. Deberás crear 2 unidades de persistencia
+- Implementa las funcionalidades de persistencia. Es tu decisión editar y crear las clases necesarias para esto.
+  - Nombres como `PlanetDAO` o `SolarSystemDAO` son bastantes adecuados. Estas clases técnicamente se consideran parte del model, aunque también puedes crear un package `DAO` para estas.
+  - El `UniGraoVerseController` debe llamar a estas clases. Revisa todos los métodos que tiene, muchos de ellos deberán ser modificados.
+  - En `PlayViewController` deberás editar el método `setupDeleteButton`. Puedes editar más métodos si lo crees conveniente, o si quieres añadir funcionalidades de manera opcional.
+  - En `MainViewController` edita dos líneas para seleccionar la unidad de persistencia adecuada.
+Edita 
 ## Entregar
-
-Un .zip con este repositorio o un link a un repositorio online. Puedes hacer un fork en github si lo prefieres. No borres la carpeta .git
+- Un .zip con este repositorio o un link a un repositorio online. Puedes hacer un fork en github si lo prefieres. ¡No borres la carpeta `.git`!
+- Un archivo `README.md` (borra/edita este) en el que expliques qué clases has creado, qué retos y problemas has tenido y las funcionalidades finales conseguidas.
+- La base de datos exportada en formato tanto `.sql` (para MySQL) y el archivo `.db` (o como hayas decidido llamar a la base de datos SQLite)

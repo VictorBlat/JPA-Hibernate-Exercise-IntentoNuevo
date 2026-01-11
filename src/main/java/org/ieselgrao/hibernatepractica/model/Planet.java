@@ -5,23 +5,22 @@ import java.time.LocalDate;
 public class Planet {
 
     // Constants for minimum values
-    private static final double MIN_MASS = 1e22;
-    private static final double MIN_RADIUS = 500;
+    private static final double MIN_MASS = 1e18;
+    private static final double MIN_RADIUS = 400;
+
+    /*
+        Probablemente quieras guardar una referencia al sistema solar para las tablas SQL,
+        deberías considerar la posibilidad de añadir un campo:
+        private SolarSystem solarSystem
+     */
 
     private int id;
-
     private String name;
-
     private int numberOfMoons;
-
     private double mass;
-
     private double radius;
-
     private double gravity;
-
     private LocalDate lastAlbedoMeasurement;
-
     private boolean hasRings;
 
     // Constructor with no "numerOfMoons" and no "hasRings" to simplify things

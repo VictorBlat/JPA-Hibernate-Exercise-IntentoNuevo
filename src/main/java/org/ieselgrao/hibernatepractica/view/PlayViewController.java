@@ -32,6 +32,8 @@ public class PlayViewController {
     private Button backButton;
     @FXML
     private Button addButton;
+    @FXML
+    private Button deleteButton;
 
     private String currentLevel = "planets";    // Tracks the current table level
     private int selectedSolarSystem = 1;        // Id from the selected solar system
@@ -41,7 +43,8 @@ public class PlayViewController {
         controller = new UniGraoVerseController();
         loadSolarSystemsTable();
         setupBackButton();
-
+        setupAddButton();
+        setupDeleteButton();
     }
 
     private void loadSolarSystemsTable()
@@ -243,15 +246,15 @@ public class PlayViewController {
     // TODO: complete this method calling properly to the controller
     @FXML
     private void setupDeleteButton() {
-        List<String> selectedRow = mainTableView.getSelectionModel().getSelectedItem();
-        if (currentLevel.equals("planets")) {
-            // controller.removePlanet(...);
-        }
-        else if (currentLevel.equals("solarSystems")) {
-            // controller.removeSolarSystem(...);
-        }
-
-        System.out.println("Deleting is still not implemented: " + selectedRow);
+        deleteButton.setOnAction( e -> {
+            List<String> selectedRow = mainTableView.getSelectionModel().getSelectedItem();
+            if (currentLevel.equals("planets")) {
+                // controller.removePlanet(...);
+            } else if (currentLevel.equals("solarSystems")) {
+                // controller.removeSolarSystem(...);
+            }
+            System.out.println("Deleting is still not implemented: " + selectedRow);
+        });
     }
 
 

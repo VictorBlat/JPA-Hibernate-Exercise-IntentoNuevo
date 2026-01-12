@@ -12,7 +12,7 @@
         <!-- onMouseClicked was changed by onAction -->
         <Button onAction="#setupBackButton" styleClass="btn" fx:id="backButton" text="Back" />
         <Button onAction="#setupAddButton" styleClass="btn" fx:id="addButton" text="Add new" />
-        <Button onAction="#setupDeleteButton" styleClass="btn" fx:id="addButton" text="Delete selected" />
+        <Button onAction="#setupDeleteButton" styleClass="btn" fx:id="deleteButton" text="Delete selected" />
 
     </VBox>
 

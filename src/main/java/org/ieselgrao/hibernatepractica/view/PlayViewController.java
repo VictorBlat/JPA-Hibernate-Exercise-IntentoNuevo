@@ -243,18 +243,28 @@ public class PlayViewController {
         addButton.setOnAction(e -> showAddDialog());
     }
 
-    // TODO: complete this method calling properly to the controller
-    @FXML
-    private void setupDeleteButton() {
-        deleteButton.setOnAction( e -> {
-            List<String> selectedRow = mainTableView.getSelectionModel().getSelectedItem();
-            if (currentLevel.equals("planets")) {
-                // controller.removePlanet(...);
-            } else if (currentLevel.equals("solarSystems")) {
-                // controller.removeSolarSystem(...);
-            }
-            System.out.println("Deleting is still not implemented: " + selectedRow);
-        });
+        @FXML
+        private void setupDeleteButton() {
+            deleteButton.setOnAction(e -> {
+                List<String> selectedRow = mainTableView.getSelectionModel().getSelectedItem();
+                if (selectedRow == null || selectedRow.isEmpty()) {
+                    showErrorDialog("Error", "Selecciona un elemento para eliminar");
+                    return;
+                }
+
+                try {
+                    int id = Integer.parseInt(selectedRow.get(0));
+                    if (currentLevel.equals("planets")) {
+                        controller.removePlanet(id);
+                        loadPlanetsTable();
+                    } else if (currentLevel.equals("solarSystems")) {
+                        controller.removeSolarSystem(id);
+                        loadSolarSystemsTable();
+                    }
+                } catch (Exception ex) {
+                    showErrorDialog("Error al eliminar", ex.getMessage());
+                }
+            });
     }
 
 
@@ -325,4 +335,5 @@ public class PlayViewController {
     private interface TableRowClickListener {
         void onRowClick(List<String> row);
     }
+
 }

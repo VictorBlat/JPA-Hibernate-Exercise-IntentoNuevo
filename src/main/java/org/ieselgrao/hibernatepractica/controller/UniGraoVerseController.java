@@ -5,167 +5,169 @@ import java.time.LocalDate;
 import java.util.*;
 
 import com.google.gson.Gson;
-import org.ieselgrao.hibernatepractica.model.Planet;
-import org.ieselgrao.hibernatepractica.model.SolarSystem;
-/**
- * Controller class for the UniGraoVerse application
- */
+import jakarta.persistence.EntityManagerFactory;
+import org.ieselgrao.hibernatepractica.model.*;
+
 public class UniGraoVerseController {
 
     private LinkedList<SolarSystem> solarSystems;
+    private SolarSystemDAO solarSystemDAO;
+    private PlanetDAO planetDAO;
+    private EntityManagerFactory emf;
 
     public UniGraoVerseController() {
+        solarSystemDAO = new SolarSystemDAO();
+        planetDAO = new PlanetDAO();
+        emf = DAOController.getEntityManagerFactory();
         solarSystems = loadSolarSystems();
         loadPlanets();
     }
 
-    // TODO: Load all planets from the selected persistence unit
-    private LinkedList<SolarSystem> loadSolarSystems()
-    {
-        // This method is "hardcoded" to have some initial data
-        LinkedList<SolarSystem> solarSystems = new LinkedList<>();
-        solarSystems.add(new SolarSystem("Sistema Solar", "Sol", 0, 40));
-        solarSystems.get(0).setId(1); // Also, the id should not be setted like this!! Remove setId method in the future
+    // Load all solar systems from the selected persistence unit
+    private LinkedList<SolarSystem> loadSolarSystems() {
+        List<SolarSystem> sistemas = solarSystemDAO.obtenerTodos(emf);
 
-        solarSystems.add(new SolarSystem("Lich system", "Lich", 700, 0.46));
-        solarSystems.get(1).setId(2);
+        // Si no hay datos, inicializar con datos hardcoded
+        if (sistemas.isEmpty()) {
+            inicializarDatosHardcoded();
+            sistemas = solarSystemDAO.obtenerTodos(emf);
+        }
 
-        solarSystems.add(new SolarSystem("Sistema Inventado", "Aitana", 100, 55));
-        solarSystems.get(2).setId(3);
-
-        return solarSystems;
+        return new LinkedList<>(sistemas);
     }
 
-    // TODO: Load all planets from the selected persistence unit
-    private void loadPlanets()
-    {
-        // This method is "hardcoded" to have some initial data
-        // Should be removed in the future
-        LinkedList<Planet> solarPlanets = new LinkedList<>();
-        solarPlanets.add(new Planet("Mercurio", 0, 3.3011e23, 2439.7, 3.7, LocalDate.of(2023, 1, 15), false));
-        solarPlanets.add(new Planet("Venus", 0, 4.8675e24, 6051.8, 8.87, LocalDate.of(2023, 2, 20), false));
-        solarPlanets.add(new Planet("Tierra", 1, 5.972e24, 6371.0, 9.80, LocalDate.of(2024, 1, 1), false));
-        solarPlanets.add(new Planet("Marte", 2, 6.4171e23, 3389.5, 3.71, LocalDate.of(2023, 5, 5), false));
-        solarPlanets.add(new Planet("Júpiter", 95, 1.898e27, 69911.0, 24.79, LocalDate.of(2022, 11, 30), true));
-        solarPlanets.add(new Planet("Saturno", 146, 5.683e26, 58232.0, 10.44, LocalDate.of(2023, 10, 10), true));
-        solarPlanets.add(new Planet("Urano", 27, 8.681e25, 25362.0, 8.69, LocalDate.of(2023, 9, 25), true));
-        solarPlanets.add(new Planet("Neptuno", 16, 1.024e26, 24622.0, 11.15, LocalDate.of(2023, 7, 18), true));
-        solarPlanets.add(new Planet("Plutón", 5, 1.309e22, 1188.3, 0.62, LocalDate.of(2023, 4, 12), false));
-        solarSystems.getFirst().setPlanets(solarPlanets);
-
-        LinkedList<Planet> lichPlanets = new LinkedList<>();
-        lichPlanets.add(new Planet("Draugr", 0, 1.194e23, 1400.0, 0.45, LocalDate.of(2012, 1, 21), false));
-        lichPlanets.add(new Planet("Poltergeist", 1, 2.568e25, 9400.0, 12.8, LocalDate.of(2013, 1, 21), false));
-        lichPlanets.add(new Planet("Phobetor", 2, 2.329e25, 9100.0, 11.2, LocalDate.of(2014, 1, 21), false));
-        lichPlanets.add(new Planet("Lich-e", 3, 2.38e21, 450.0, 0.08, LocalDate.of(2002, 2, 10), false));
-        solarSystems.get(1).setPlanets(lichPlanets);
-
-        LinkedList<Planet> inventedPlanets = new LinkedList<>();
-        inventedPlanets.add(new Planet("Tatooine", 0, 3.3011e23, 2439.7, 3.7, LocalDate.of(2023, 1, 15), false));
-        inventedPlanets.add(new Planet("Arrakis", 0, 4.8675e24, 6051.8, 8.87, LocalDate.of(2023, 2, 20), false));
-        inventedPlanets.add(new Planet("Pandora", 1, 5.972e24, 6371.0, 9.80, LocalDate.of(2024, 1, 1), false));
-        inventedPlanets.add(new Planet("Solaris", 2, 6.4171e23, 3389.5, 3.71, LocalDate.of(2023, 5, 5), false));
-        solarSystems.get(2).setPlanets(inventedPlanets);
-
-
-        // Asign IDs.
-        // TODO: remove this loop. IDs should be added in other way
-        // Also, ID should not repeat even in different solar sistems
-        for (SolarSystem ss : solarSystems)
-        {
-            System.out.println("Loaded " + ss.getPlanets().size() + " planets " + " for " + ss.getName());
-
-            List<Planet> planets = ss.getPlanets();
-            for (int i = 0; i < planets.size(); i++)
-            {
-                planets.get(i).setId(i+1); // Id starts by 1
-            }
+    // Load all planets from the selected persistence unit
+    private void loadPlanets() {
+        // Los planetas ya se cargan con los sistemas solares gracias a EAGER fetch
+        for (SolarSystem ss : solarSystems) {
+            System.out.println("Loaded " + ss.getPlanets().size() + " planets for " + ss.getName());
         }
     }
 
+    private void inicializarDatosHardcoded() {
+        // This method is "hardcoded" to have some initial data
+        SolarSystem sistemaSolar = new SolarSystem("Sistema Solar", "Sol", 0, 40);
+        sistemaSolar.addPlanet(new Planet("Mercurio", 0, 3.3011e23, 2439.7, 3.7, LocalDate.of(2023, 1, 15), false, sistemaSolar));
+        sistemaSolar.addPlanet(new Planet("Venus", 0, 4.8675e24, 6051.8, 8.87, LocalDate.of(2023, 2, 20), false, sistemaSolar));
+        sistemaSolar.addPlanet(new Planet("Tierra", 1, 5.972e24, 6371.0, 9.80, LocalDate.of(2024, 1, 1), false, sistemaSolar));
+        sistemaSolar.addPlanet(new Planet("Marte", 2, 6.4171e23, 3389.5, 3.71, LocalDate.of(2023, 5, 5), false, sistemaSolar));
+        sistemaSolar.addPlanet(new Planet("Júpiter", 95, 1.898e27, 69911.0, 24.79, LocalDate.of(2022, 11, 30), true, sistemaSolar));
+        sistemaSolar.addPlanet(new Planet("Saturno", 146, 5.683e26, 58232.0, 10.44, LocalDate.of(2023, 10, 10), true, sistemaSolar));
+        sistemaSolar.addPlanet(new Planet("Urano", 27, 8.681e25, 25362.0, 8.69, LocalDate.of(2023, 9, 25), true, sistemaSolar));
+        sistemaSolar.addPlanet(new Planet("Neptuno", 16, 1.024e26, 24622.0, 11.15, LocalDate.of(2023, 7, 18), true, sistemaSolar));
+        sistemaSolar.addPlanet(new Planet("Plutón", 5, 1.309e22, 1188.3, 0.62, LocalDate.of(2023, 4, 12), false, sistemaSolar));
+        solarSystemDAO.guardar(sistemaSolar, emf);
 
-    /**
-     * TODO:Add a solar system to the controller. Also, call persistence!
-     */
-    public void addSolarSystem(String name, String starName, double starDistance, double Radius) {
-        // solarSystems.add(new ...)
+        SolarSystem lichSystem = new SolarSystem("Lich system", "Lich", 700, 0.46);
+        lichSystem.addPlanet(new Planet("Draugr", 0, 1.194e23, 1400.0, 0.45, LocalDate.of(2012, 1, 21), false, lichSystem));
+        lichSystem.addPlanet(new Planet("Poltergeist", 1, 2.568e25, 9400.0, 12.8, LocalDate.of(2013, 1, 21), false, lichSystem));
+        lichSystem.addPlanet(new Planet("Phobetor", 2, 2.329e25, 9100.0, 11.2, LocalDate.of(2014, 1, 21), false, lichSystem));
+        lichSystem.addPlanet(new Planet("Lich-e", 3, 2.38e21, 450.0, 0.08, LocalDate.of(2002, 2, 10), false, lichSystem));
+        solarSystemDAO.guardar(lichSystem, emf);
+
+        SolarSystem sistemaInventado = new SolarSystem("Sistema Inventado", "Aitana", 100, 55);
+        sistemaInventado.addPlanet(new Planet("Tatooine", 0, 3.3011e23, 2439.7, 3.7, LocalDate.of(2023, 1, 15), false, sistemaInventado));
+        sistemaInventado.addPlanet(new Planet("Arrakis", 0, 4.8675e24, 6051.8, 8.87, LocalDate.of(2023, 2, 20), false, sistemaInventado));
+        sistemaInventado.addPlanet(new Planet("Pandora", 1, 5.972e24, 6371.0, 9.80, LocalDate.of(2024, 1, 1), false, sistemaInventado));
+        sistemaInventado.addPlanet(new Planet("Solaris", 2, 6.4171e23, 3389.5, 3.71, LocalDate.of(2023, 5, 5), false, sistemaInventado));
+        solarSystemDAO.guardar(sistemaInventado, emf);
     }
-    /**
-     * TODO: Update an existing planet to the controller. Also, call persistence!
-     * @return true is succesful, false if fail
-     */
+
+    // Add a solar system to the controller. Also, call persistence!
+    public void addSolarSystem(String name, String starName, double starDistance, double Radius) {
+        SolarSystem nuevo = new SolarSystem(name, starName, starDistance, Radius);
+        solarSystemDAO.guardar(nuevo, emf);
+        solarSystems.add(nuevo);
+    }
+
+    // Update an existing planet in the controller. Also, call persistence!
     public boolean updatePlanet(int ID, String name, double mass, double Radius, double gravity, LocalDate date) {
-        for (SolarSystem solarSystem : solarSystems) {
-            for (Planet planet : solarSystem.getPlanets()) {
-                if (planet.getId() == ID) {
-                    planet.setName(name);
-                    planet.setMass(mass);
-                    planet.setRadius(Radius);
-                    planet.setGravity(gravity);
-                    planet.setLastAlbedoMeasurement(date);
+        Planet planet = planetDAO.obtenerPorId(ID, emf);
+        if (planet != null) {
+            planet.setName(name);
+            planet.setMass(mass);
+            planet.setRadius(Radius);
+            planet.setGravity(gravity);
+            planet.setLastAlbedoMeasurement(date);
+            planetDAO.actualizar(planet, emf);
+
+            // Actualizar también en memoria
+            for (SolarSystem solarSystem : solarSystems) {
+                for (Planet p : solarSystem.getPlanets()) {
+                    if (p.getId() == ID) {
+                        p.setName(name);
+                        p.setMass(mass);
+                        p.setRadius(Radius);
+                        p.setGravity(gravity);
+                        p.setLastAlbedoMeasurement(date);
+                        break;
+                    }
                 }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
-    /**
-     * TODO: You might need to change this code to call persistence. Also, ensure ID is managed somehow!
-     */
+    // Add planet and persist to database
     public void addPlanet(int solarSystemId, String name, double mass, double radius, double gravity, LocalDate lastAlbedoMeasurement) {
-        for (SolarSystem ss : solarSystems)
-        {
-            if (ss.getId() == solarSystemId)
-            {
-                ss.getPlanets().add(new Planet(name, mass, radius, gravity, lastAlbedoMeasurement));
-                System.out.println("Added new planet to Solar System " + solarSystemId + ". Current size is: " + ss.getPlanets().size());
-                return;
+        SolarSystem ss = solarSystemDAO.obtenerPorId(solarSystemId, emf);
+        if (ss != null) {
+            Planet nuevoPlaneta = new Planet(name, mass, radius, gravity, lastAlbedoMeasurement);
+            nuevoPlaneta.setSolarSystem(ss);
+            planetDAO.guardar(nuevoPlaneta, emf);
+
+            // Actualizar en memoria
+            for (SolarSystem sistema : solarSystems) {
+                if (sistema.getId() == solarSystemId) {
+                    sistema.addPlanet(nuevoPlaneta);
+                    System.out.println("Added new planet to Solar System " + solarSystemId + ". Current size is: " + sistema.getPlanets().size());
+                    break;
+                }
             }
+        } else {
+            System.err.println("Could not find solar system with id: " + solarSystemId);
         }
-        System.err.println("Could not find solar system with id: " + solarSystemId);
     }
 
-    // TODO: remove Planets from Java, but also from persistence
+    // Remove Planets from Java and from persistence
     public void removePlanet(int planetId) {
+        planetDAO.eliminar(planetId, emf);
 
+        // Eliminar también de memoria
+        for (SolarSystem ss : solarSystems) {
+            ss.getPlanets().removeIf(p -> p.getId() == planetId);
+        }
     }
-    public void removeSolarSystem(int solarSystemId){
 
+    public void removeSolarSystem(int solarSystemId) {
+        solarSystemDAO.eliminar(solarSystemId, emf);
+        solarSystems.removeIf(ss -> ss.getId() == solarSystemId);
     }
 
-    /**
-     * Get the list of solar systems
-     * @return List of solar system in JSON format with keys name, star and radius
-     */
     public List<String> getSolarSystemsData() {
         List<String> solarSystemsData = new ArrayList<>();
         Gson gson = new Gson();
-        for (SolarSystem s : solarSystems){
+        for (SolarSystem s : solarSystems) {
             Map<String, String> data = new HashMap<>();
             data.put("id", String.valueOf(s.getId()));
             data.put("name", s.getName());
-            data.put("star",s.getStarName());
-            data.put("distance",String.valueOf(s.getStarDistance()));
+            data.put("star", s.getStarName());
+            data.put("distance", String.valueOf(s.getStarDistance()));
             data.put("radius", String.valueOf(s.getRadius()));
             solarSystemsData.add(gson.toJson(data));
         }
-
         return solarSystemsData;
     }
-    /**
-     * Get the list of planets for a given solar system
-     * @return A list with all planets data, in json format with keys 'name', 'mass' and 'radius'
-     */
+
     public List<String> getPlanetsData(int solarSystemId) {
         List<String> planetsData = new ArrayList<>();
         Gson gson = new Gson();
-        for (SolarSystem s : solarSystems)
-        {
-            if (s.getId() != solarSystemId)   // Chose planets from right solar system
-            {
+        for (SolarSystem s : solarSystems) {
+            if (s.getId() != solarSystemId) {
                 continue;
             }
-            for (Planet p : s.getPlanets()){
+            for (Planet p : s.getPlanets()) {
                 Map<String, String> data = new HashMap<>();
                 data.put("id", String.valueOf(p.getId()));
                 data.put("name", p.getName());
@@ -176,11 +178,6 @@ public class UniGraoVerseController {
                 planetsData.add(gson.toJson(data));
             }
         }
-
         return planetsData;
     }
-
-
-
-
 }

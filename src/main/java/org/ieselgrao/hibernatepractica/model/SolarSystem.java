@@ -1,14 +1,36 @@
 package org.ieselgrao.hibernatepractica.model;
 
+import jakarta.persistence.*;
 import java.util.LinkedList;
+import java.util.List;
 
+@Entity
+@Table(name = "solar_systems")
 public class SolarSystem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "star_name", nullable = false)
     private String starName;
-    private double starDistance; // Main star distance to the Sun, in parsecs
-    private double Radius;      // Distance to most far away planet, in UA
-    private LinkedList<Planet> planets;
+
+    @Column(name = "star_distance", nullable = false)
+    private double starDistance;
+
+    @Column(name = "radius", nullable = false)
+    private double Radius;
+
+    @OneToMany(mappedBy = "solarSystem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Planet> planets;
+
+    // Constructor vacío para JPA
+    public SolarSystem() {
+        this.planets = new LinkedList<>();
+    }
 
     public SolarSystem(String name, String starName, double starDistance, double Radius) {
         this.name = name;
@@ -18,11 +40,11 @@ public class SolarSystem {
         this.planets = new LinkedList<>();
     }
 
-    // Setters and getters
-    public int getId(){
+    public int getId() {
         return id;
     }
-    public void setId(int id){  // Should be removed in the future, since ID should not be assigned this way
+
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -42,7 +64,7 @@ public class SolarSystem {
     }
 
     public void setStarName(String starName) {
-        if (name == null || name.trim().isEmpty()) {
+        if (starName == null || starName.trim().isEmpty()) {
             throw new UniverseException(UniverseException.INVALID_NAME);
         }
         this.starName = starName;
@@ -64,19 +86,27 @@ public class SolarSystem {
     }
 
     public void setRadius(double Radius) {
-        // Perhaps we could add a minimum solar system radius
         this.Radius = Radius;
     }
 
-    public LinkedList<Planet> getPlanets() {
+    public List<Planet> getPlanets() {
         return planets;
     }
 
     public void setPlanets(LinkedList<Planet> planets) {
-        if (planets == null || planets.isEmpty())
-        {
-            throw new UniverseException(UniverseException.INVALID_PLANET_LIST);
-        }
         this.planets = planets;
+        for (Planet p : planets) {
+            p.setSolarSystem(this);
+        }
+    }
+
+    public void addPlanet(Planet planet) {
+        planets.add(planet);
+        planet.setSolarSystem(this);
+    }
+
+    public void removePlanet(Planet planet) {
+        planets.remove(planet);
+        planet.setSolarSystem(null);
     }
 }

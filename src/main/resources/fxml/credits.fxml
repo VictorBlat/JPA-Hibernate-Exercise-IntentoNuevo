@@ -10,7 +10,7 @@
          <Font name="System Bold" size="36.0" />
       </font></Label>
 
-    <Label alignment="TOP_CENTER" layoutX="97.0" layoutY="147.0" prefHeight="300.0" prefWidth="459.0" styleClass="credits-text" text="This application was made using template by Alvaro R with love." textAlignment="CENTER">
+    <Label alignment="TOP_CENTER" layoutX="97.0" layoutY="147.0" prefHeight="300.0" prefWidth="459.0" styleClass="credits-text" text="App Para alojar sistemas solares y planetas que pertenecen a ellos en persistencias de datos. Victor B." textAlignment="CENTER">
     <font>
          <Font size="14.0" />
       </font></Label>

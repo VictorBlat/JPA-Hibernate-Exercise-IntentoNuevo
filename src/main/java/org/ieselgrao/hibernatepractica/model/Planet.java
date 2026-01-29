@@ -38,15 +38,11 @@ public class Planet {
     @ManyToOne
     @JoinColumn(name = "solar_system_id", nullable = false)
     private SolarSystem solarSystem;
-
-    // Constructor vacío para JPA
     public Planet() {
     }
-
     public Planet(String name, double mass, double radius, double gravity, LocalDate lastAlbedoMeasurement) {
         this(name, 0, mass, radius, gravity, lastAlbedoMeasurement, false, null);
     }
-
     public Planet(String name, int numberOfMoons, double mass, double radius, double gravity, LocalDate lastAlbedoMeasurement, boolean hasRings, SolarSystem solarSystem) {
         setName(name);
         setNumberOfMoons(numberOfMoons);
@@ -61,7 +57,6 @@ public class Planet {
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -69,7 +64,6 @@ public class Planet {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new UniverseException(UniverseException.INVALID_NAME);
@@ -98,7 +92,6 @@ public class Planet {
         }
         this.mass = mass;
     }
-
     public double getRadius() {
         return radius;
     }
@@ -109,7 +102,6 @@ public class Planet {
         }
         this.radius = radius;
     }
-
     public double getGravity() {
         return gravity;
     }
@@ -120,7 +112,6 @@ public class Planet {
         }
         this.gravity = gravity;
     }
-
     public LocalDate getLastAlbedoMeasurement() {
         return lastAlbedoMeasurement;
     }
@@ -131,7 +122,6 @@ public class Planet {
         }
         this.lastAlbedoMeasurement = lastAlbedoMeasurement;
     }
-
     public boolean hasRings() {
         return hasRings;
     }

@@ -17,7 +17,6 @@ public class MainViewController {
             System.exit(1);
         }
     }
-
     @FXML
     public void newLoginSQLite() {
         try {

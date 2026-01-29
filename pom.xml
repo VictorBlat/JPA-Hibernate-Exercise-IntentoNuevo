@@ -10,6 +10,9 @@
   <name>HibernatePractica</name>
 
   <properties>
+    <property name="hibernate.connection.driver_class" value="org.sqlite.JDBC" />
+    <property name="hibernate.dialect" value="org.hibernate.community.dialect.SQLiteDialect"/>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <junit.version>5.12.1</junit.version>  </properties>
 
@@ -31,7 +34,7 @@
     <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
-      <version>3.43.0.0</version>
+      <version>3.45.0.0</version>
     </dependency>
 
 

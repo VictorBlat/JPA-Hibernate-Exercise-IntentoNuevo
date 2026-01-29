@@ -38,3 +38,120 @@ Edita
 - Un .zip con este repositorio o un link a un repositorio online. Puedes hacer un fork en github si lo prefieres. ¡No borres la carpeta `.git`!
 - Un archivo `README.md` (borra/edita este) en el que expliques qué clases has creado, qué retos y problemas has tenido y las funcionalidades finales conseguidas.
 - La base de datos exportada en formato tanto `.sql` (para MySQL) y el archivo `.db` (o como hayas decidido llamar a la base de datos SQLite)
+
+# README - Victor Blat Giner
+# Dependencias añadidas 
+He añadido las siguientes dependencias al proyecto:
+
+- Hibernate Core: El motor de persistencia que mapea objetos Java a tablas SQL
+- MySQL Connector: Driver para conectar con bases de datos MySQL 
+- SQLite JDBC: Driver para trabajar con SQLite
+- Hibernate Community Dialects: Incluye soporte para SQLite
+
+# Clases creadas
+DAOController.java
+- Clase controladora que gestiona la conexión con la base de datos:
+  - init(String unitName): Inicializa la conexión con la unidad de persistencia elegida (MySQL o SQLite)
+  - getEntityManagerFactory(): Devuelve la fábrica de EntityManager para hacer operaciones con la BD
+  - close(): Cierra la conexión cuando terminamos
+
+PlanetDAO.java
+- Clase que maneja todas las operaciones de base de datos para los planetas:
+
+  - obtenerTodos(): Recupera todos los planetas de la BD
+  - obtenerPorId(int id): Busca un planeta específico por su ID
+  - guardar(Planet p): Inserta un nuevo planeta en la BD
+  - actualizar(Planet p): Modifica un planeta existente
+  - eliminar(int id): Borra un planeta de la BD
+
+SolarSystemDAO.java
+- Igual que PlanetDAO pero para sistemas solares:
+  - btenerTodos(): Lista todos los sistemas solares
+  - obtenerPorId(int id): Busca un sistema solar por ID
+  - guardar(SolarSystem ss): Guarda un nuevo sistema solar
+  - actualizar(SolarSystem ss): Actualiza un sistema existente
+  - eliminar(int id): Elimina un sistema solar
+
+# Modificaciones en clases existentes
+Planet.java y SolarSystem.java
+- He añadido las anotaciones de JPA para que Hibernate sepa cómo mapear estas clases a tablas:
+  - @Entity: Marca la clase como entidad persistente
+  - @Table: Indica el nombre de la tabla en la BD
+  - @Id: Define la clave primaria
+  - @GeneratedValue: Hace que el ID se genere automáticamente
+  - @Column: Mapea cada atributo a una columna
+  - @ManyToOne y @OneToMany: Definen la relación entre planetas y sistemas solares
+
+También he añadido en Planet una referencia a su SolarSystem para poder navegar la relación en ambas direcciones.
+UniGraoVerseController.java
+
+- He modificado todos los métodos CRUD para que llamen a los DAOs:
+
+  - loadSolarSystems(): Ahora carga desde la BD en vez de memoria
+  - addSolarSystem(): Guarda en BD además de añadir a la lista en memoria
+  - addPlanet(): Persiste el nuevo planeta en la BD
+  - updatePlanet(): Actualiza tanto en memoria como en BD
+  - removePlanet() y removeSolarSystem(): Eliminan de la BD y de memoria
+
+PlayViewController.java
+- He Actualizado el método updatePlanetInController() para que use el ID correcto al actualizar (antes se usaba el ID del sistema solar en vez del ID del planeta).
+
+MainViewController.java
+
+- He añadido las llamadas a DAOController.init() para inicializar la unidad de persistencia correcta según el botón que pulse el usuario (MySQL o SQLite).
+
+# Archivo persistence.xml
+- He creado el archivo src/main/resources/META-INF/persistence.xml que configura las dos unidades de persistencia:
+
+  - mysql-persistence-unit: Configuración para MySQL con la URL, usuario, contraseña y dialecto
+  - sqlite-persistence-unit: Configuración para SQLite con la ruta del archivo .db y su dialecto
+
+# Problemas encontrados y soluciones
+Problema 1: Tablas innecesarias (SEQ, HTE)
+- Error: Hibernate creaba tablas auxiliares como planets_SEQ, solar_systems_SEQ, HTE_planets y HTE_solar_systems.
+  - Causa: Usaba GenerationType.AUTO que hace que Hibernate elija automáticamente la estrategia, creando tablas de secuencias.
+- Solución intentada: Cambié a GenerationType.IDENTITY que usa el autoincremento nativo de la BD... pero apareció otro problema.
+Problema 2: SQLite no soporta IDENTITY
+- Error: SQLFeatureNotSupportedException: not implemented by SQLite JDBC driver
+  - Causa: El driver de SQLite no implementa el método getGeneratedKeys() que necesita la estrategia IDENTITY.
+- Solución final: Cambié la versión de la dependencia del sqlite debido a que lo tenia en una versión antigua que no soportaba dicho método
+Problema 3: Error al actualizar planetas
+- Error: Los planetas no se actualizaban correctamente.
+  - Causa: En PlayViewController.updatePlanetInController() estaba pasando el ID del sistema solar en vez del ID del planeta al método del controlador.
+- Solución: Cambié para que obtenga el ID correcto de la primera columna de la fila (row.get(0)).
+
+# Funcionalidades finales conseguidas
+- Persistencia dual: Funciona con MySQL y SQLite intercambiablemente
+- Cargar datos: La aplicación carga automáticamente desde la BD al iniciar
+- Añadir: Se pueden crear nuevos planetas y sistemas solares
+- Editar: Los planetas se pueden modificar haciendo doble clic en sus celdas
+- Eliminar: Botón para borrar planetas y sistemas solares
+- Datos iniciales: Si la BD está vacía, se cargan datos hardcoded automáticamente
+- Relaciones: Los planetas mantienen su relación con su sistema solar
+
+# Estructura final de la base de datos
+
+Tabla: solar_systems
+- id (PK, autogenerado)
+- name
+- star_name
+- star_distance
+- radius
+
+Tabla: planets
+- id (PK, autogenerado)
+- name
+- number_of_moons
+- mass
+- radius
+- gravity
+- last_albedo_measurement
+- has_rings
+- solar_system_id (FK → solar_systems)
+
+
+Autor: Victor Blat
+
+Curso: 2º DAM
+
+Fecha: 29 de Enero 2026

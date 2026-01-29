@@ -11,7 +11,7 @@ public class Planet {
     private static final double MIN_RADIUS = 400;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name", nullable = false)

@@ -7,8 +7,8 @@ import java.time.LocalDate;
 @Table(name = "planets")
 public class Planet {
 
-    private static final double MIN_MASS = 1e18;
-    private static final double MIN_RADIUS = 400;
+    private static final double MIN_MASS = 1e22;
+    private static final double MIN_RADIUS = 500;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
